@@ -1,0 +1,129 @@
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center">
+    @let current = this.state();
+    <h2>Products</h2>
+    <p class="d-flex align-items-center gap-2 fs-5 mb-0 text-secondary">
+      <span>Total Products</span>
+
+      <span class="fs-5 fw-bold text-primary">
+        @if (current.status === 'idle' || current.status === 'success') {
+          {{ current.product.length }}
+        } @else {
+          <span class="spinner-border spinner-border-sm text-primary" role="status"> </span>
+        }
+      </span>
+    </p>
+  </div>
+  <hr />
+  <div class="d-flex gap-2">
+    <div class="position-relative d-flex justifiy-content-between align-items-center gap-2">
+      <input
+        #searchInput
+        type="text"
+        class="form-control pe-5"
+        [value]="query()"
+        placeholder="Search Product..."
+        (input)="query.set(searchInput.value)"
+      />
+
+      @if (query()) {
+        <button
+          type="button"
+          class="btn btn-lg position-absolute top-50 end-0 translate-middle-y border-0"
+          aria-label="Clear search"
+          (click)="query.set('')"
+        >
+          &times;
+        </button>
+      }
+    </div>
+    <div class="dropdown">
+      <button
+        class="btn btn-outline-primary dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        {{ optionValue() || 'Select Category' }}
+      </button>
+      <ul class="dropdown-menu">
+        <li>
+          <a class="dropdown-item" (click)="optionValue.set('')"> All </a>
+        </li>
+        @for (option of options(); track option.id) {
+          <li>
+            <a class="dropdown-item" (click)="optionValue.set(option.name)">{{ option.name }}</a>
+          </li>
+        }
+      </ul>
+    </div>
+    <div class="dropdown">
+      <button
+        class="btn btn-outline-info dropdown-toggle"
+        type="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+      >
+        {{ sortByOptionsValue() || 'Sort By' }}
+      </button>
+      <ul class="dropdown-menu">
+        @for (option of sortByOptions(); track option.id) {
+          <li>
+            <a class="dropdown-item" (click)="sortByOptionsValue.set(option.value)">{{
+              option.value
+            }}</a>
+          </li>
+        }
+        <li>
+          <hr class="dropdown-divider" />
+        </li>
+        <li>
+          <a class="dropdown-item" (click)="sortByOptionsValue.set('')"> Reset Filter </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <hr />
+</div>
+
+<div class="container">
+  <div class="row">
+    @if (current.status == 'idle' || current.status == 'success') {
+      @for (item of current.product; track item.id) {
+        <div class="col-md-3">
+          <div class="card mb-3" style="max-width: 540px">
+            <div class="row g-0">
+              <div class="col-md-4">
+                <img [src]="item.imageCover" class="img-fluid rounded-start" alt="..." />
+              </div>
+              <div class="col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">{{ item.title }}</h5>
+                  <p class="card-text">
+                    {{ item.description.split(' ').slice(0, 10).join(' ') }}
+                  </p>
+                  <p class="card-text">Category : {{ item.category.name }}</p>
+                  <p class="card-text">
+                    <small class="text-muted">{{ item.price | currency }}</small>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      } @empty {
+        <p class="text-center">No Matching Result ...!</p>
+      }
+    } @else if (current.status == 'error') {
+      <div class="error">
+        {{ current.message }}
+      </div>
+    } @else if (current.status == 'loading') {
+      <div class="col-md-12 text-center">
+        <div class="spinner-border text-info" style="width: 3rem; height: 3rem" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    }
+  </div>
+</div>
