@@ -119,10 +119,9 @@
         {{ current.message }}
       </div>
     } @else if (current.status == 'loading') {
-      <div class="col-md-12 text-center">
-        <div class="spinner-border text-info" style="width: 3rem; height: 3rem" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
+      <div class="col-md-12 text-center d-flex justify-content-center align-items-center gap-3">
+        <div class="spinner-border text-info" style="width: 3rem; height: 3rem" role="status"></div>
+        <span>Loading Products...</span>
       </div>
     }
   </div>

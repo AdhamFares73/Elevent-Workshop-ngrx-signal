@@ -6,6 +6,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import {
   catchError,
   combineLatest,
+  debounceTime,
   distinctUntilChanged,
   map,
   of,
@@ -65,7 +66,7 @@ export class ProductsComponent {
               catchError(() =>
                 of<searchState>({
                   status: 'error',
-                  message: 'Search Faild',
+                  message: 'Something went wrong while loading products.',
                 }),
               ),
             ),
@@ -76,6 +77,12 @@ export class ProductsComponent {
       );
     }),
   );
+
+  readonly state = toSignal(this.state$, {
+    initialValue: {
+      status: 'loading',
+    } as searchState,
+  });
   // private readonly categoryState$ = combineLatest([
   //   this.option$.pipe(distinctUntilChanged()),
   //   this.products$,
@@ -110,9 +117,4 @@ export class ProductsComponent {
   //     );
   //   }),
   // );
-  readonly state = toSignal(this.state$, {
-    initialValue: {
-      status: 'loading',
-    } as searchState,
-  });
 }
